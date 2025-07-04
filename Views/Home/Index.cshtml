@@ -1,0 +1,164 @@
+﻿@model HomeViewModel
+
+@{
+    ViewData["Title"] = "Početna";
+}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1><i class="fas fa-graduation-cap me-3"></i>School Management System</h1>
+                <p class="lead">Dobrodošli u modern sistem za upravljanje školskim podacima</p>
+                <a href="@Url.Action("Index", "Student")" class="btn btn-primary btn-lg mt-3">
+                    <i class="fas fa-rocket me-2"></i>Počni odmah
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stats-card p-4 border rounded shadow-sm">
+                    <div class="icon text-primary mb-2">
+                        <i class="fas fa-user-graduate fa-2x"></i>
+                    </div>
+                    <h3>@Model.StudentCount</h3>
+                    <p>Ukupno studenata</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stats-card p-4 border rounded shadow-sm">
+                    <div class="icon text-success mb-2">
+                        <i class="fas fa-book fa-2x"></i>
+                    </div>
+                    <h3>@Model.CourseCount</h3>
+                    <p>Aktivnih kurseva</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stats-card p-4 border rounded shadow-sm">
+                    <div class="icon text-warning mb-2">
+                        <i class="fas fa-chalkboard-teacher fa-2x"></i>
+                    </div>
+                    <h3>@Model.TeacherCount</h3>
+                    <p>Nastavnika</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stats-card p-4 border rounded shadow-sm">
+                    <div class="icon text-danger mb-2">
+                        <i class="fas fa-clipboard-list fa-2x"></i>
+                    </div>
+                    <h3>@Model.EnrollmentCount</h3>
+                    <p>Aktivnih upisa</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Brze Akcije i Poslednji Studenti -->
+<section class="pb-5">
+    <div class="container">
+        <div class="row">
+            <!-- Brze Akcije -->
+            <div class="col-lg-4 mb-4">
+                <div class="quick-actions bg-white p-4 border rounded shadow-sm">
+                    <h4 class="mb-3"><i class="fas fa-bolt me-2"></i>Brze akcije</h4>
+                    <a href="@Url.Action("Create", "Student")" class="btn btn-primary w-100 mb-2">
+                        <i class="fas fa-plus me-2"></i>Dodaj studenta
+                    </a>
+                    <a href="@Url.Action("Create", "Course")" class="btn btn-success w-100 mb-2">
+                        <i class="fas fa-plus me-2"></i>Dodaj kurs
+                    </a>
+                    <a href="@Url.Action("Create", "Teacher")" class="btn btn-warning w-100 mb-2">
+                        <i class="fas fa-plus me-2"></i>Dodaj nastavnika
+                    </a>
+                    <a href="@Url.Action("Create", "Enrollment")" class="btn btn-info w-100">
+                        <i class="fas fa-plus me-2"></i>Dodaj upis
+                    </a>
+                </div>
+            </div>
+
+            <!-- Poslednji studenti -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-user-graduate me-2"></i>Poslednji studenti
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.LatestStudents != null && Model.LatestStudents.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var student in Model.LatestStudents)
+                                {
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="fas fa-user text-primary me-2"></i>
+                                        <span class="fw-semibold">@student.FullName</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <div class="text-center py-5">
+                                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">Trenutno nema studenata u bazi podataka.</p>
+                                <a href="@Url.Action("Create", "Student")" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Dodaj prvog studenta
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Animacija stats kartica
+        window.addEventListener('scroll', function () {
+            const cards = document.querySelectorAll('.stats-card');
+            cards.forEach(card => {
+                const cardTop = card.getBoundingClientRect().top;
+                const cardVisible = 150;
+
+                if (cardTop < window.innerHeight - cardVisible) {
+                    card.style.animation = 'fadeInUp 0.6s ease forwards';
+                }
+            });
+        });
+    </script>
+
+    <style>
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-card {
+            opacity: 0;
+        }
+
+        .fw-semibold {
+            font-weight: 600;
+        }
+    </style>
+}

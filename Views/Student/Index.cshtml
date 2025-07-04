@@ -1,0 +1,127 @@
+@model PagedList<Student>
+
+@{
+    ViewData["Title"] = "Studenti";
+    var currentSort = ViewData["CurrentSort"] as string;
+    var nameSortParam = ViewData["NameSortParm"] as string;
+    var currentFilter = ViewData["CurrentFilter"] as string;
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h4 class="mb-0">
+                                <i class="fas fa-user-graduate me-2"></i>Lista studenata
+                            </h4>
+                        </div>
+                        <div class="col-auto">
+                            <a href="@Url.Action("Create")" class="btn btn-primary btn-custom">
+                                <i class="fas fa-plus me-2"></i>Dodaj novog studenta
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Index" method="get" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" name="searchString" value="@currentFilter" class="form-control" placeholder="Pretraži po imenu...">
+                            <button type="submit" class="btn btn-outline-secondary">Pretraži</button>
+                        </div>
+                    </form>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <a asp-action="Index" asp-route-sortOrder="@nameSortParam" asp-route-searchString="@currentFilter" asp-route-page="@Model.PageIndex">
+                                                <i class="fas fa-user me-2"></i>Ime i prezime
+                                            </a>
+                                        </th>
+                                        <th><i class="fas fa-cogs me-2"></i>Akcije</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var student in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-3">
+                                                        <i class="fas fa-user text-white"></i>
+                                                    </div>
+                                                    <strong>@student.FullName</strong>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("Edit", new { id = student.Id })" class="btn btn-warning btn-action" title="Izmeni">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="@Url.Action("Details", new { id = student.Id })" class="btn btn-info btn-action" title="Detalji">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="@Url.Action("Delete", new { id = student.Id })" class="btn btn-danger btn-action" title="Obriši">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <nav>
+                            <ul class="pagination justify-content-center">
+                                @if (Model.HasPreviousPage)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex - 1)" asp-route-sortOrder="@currentSort" asp-route-searchString="@currentFilter">Prethodna</a>
+                                    </li>
+                                }
+
+                                @for (int i = 1; i <= Model.TotalPages; i++)
+                                {
+                                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                        <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-sortOrder="@currentSort" asp-route-searchString="@currentFilter">@i</a>
+                                    </li>
+                                }
+
+                                @if (Model.HasNextPage)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex + 1)" asp-route-sortOrder="@currentSort" asp-route-searchString="@currentFilter">Sledeća</a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-users fa-4x text-muted mb-4"></i>
+                            <h4 class="text-muted">Nema studenata</h4>
+                            <p class="text-muted">Trenutno nema studenata u bazi podataka.</p>
+                            <a href="@Url.Action("Create")" class="btn btn-primary btn-custom">
+                                <i class="fas fa-plus me-2"></i>Dodaj prvog studenta
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar-sm {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+</style>
