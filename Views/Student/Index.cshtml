@@ -25,6 +25,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="card-body">
                     <form asp-action="Index" method="get" class="mb-3">
                         <div class="input-group">
@@ -36,7 +37,7 @@
                     @if (Model != null && Model.Any())
                     {
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover align-middle">
                                 <thead>
                                     <tr>
                                         <th>
@@ -44,6 +45,10 @@
                                                 <i class="fas fa-user me-2"></i>Ime i prezime
                                             </a>
                                         </th>
+                                        <th><i class="fas fa-id-card me-2"></i>JMBG</th>
+                                        <th><i class="fas fa-phone me-2"></i>Telefon</th>
+                                        <th><i class="fas fa-envelope me-2"></i>E‑pošta</th>
+                                        <th><i class="fas fa-user-shield me-2"></i>Hitni kontakt</th>
                                         <th><i class="fas fa-cogs me-2"></i>Akcije</th>
                                     </tr>
                                 </thead>
@@ -59,14 +64,23 @@
                                                     <strong>@student.FullName</strong>
                                                 </div>
                                             </td>
+                                            <td>@student.Jmbg</td>
+                                            <td>@student.Phone</td>
+                                            <td>@student.Email</td>
                                             <td>
-                                                <a href="@Url.Action("Edit", new { id = student.Id })" class="btn btn-warning btn-action" title="Izmeni">
+                                                <div>
+                                                    <strong>@student.EmergencyContactName</strong><br />
+                                                    <span class="text-muted">@student.EmergencyContactPhone</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("Edit", new { id = student.Id })" class="btn btn-warning btn-sm me-1" title="Izmeni">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="@Url.Action("Details", new { id = student.Id })" class="btn btn-info btn-action" title="Detalji">
+                                                <a href="@Url.Action("Details", new { id = student.Id })" class="btn btn-info btn-sm me-1" title="Detalji">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="@Url.Action("Delete", new { id = student.Id })" class="btn btn-danger btn-action" title="Obriši">
+                                                <a href="@Url.Action("Delete", new { id = student.Id })" class="btn btn-danger btn-sm" title="Obriši">
                                                     <i class="fas fa-trash"></i>
                                                 </a>
                                             </td>
@@ -123,5 +137,14 @@
         width: 35px;
         height: 35px;
         font-size: 14px;
+    }
+
+    td, th {
+        vertical-align: middle !important;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
     }
 </style>

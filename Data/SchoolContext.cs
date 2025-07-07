@@ -29,5 +29,7 @@ public class SchoolContext : IdentityDbContext<IdentityUser>
             .HasOne(ct => ct.Teacher)
             .WithMany(t => t.CourseTeachers)
             .HasForeignKey(ct => ct.TeacherId);
+        
+        modelBuilder.Entity<Teacher>().Ignore(t => t.FullName);
     }
 }

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Korisnik\\Desktop\\SchoolManagementSystem\\SchoolManagementSystem.csproj": {}
+    "C:\\Users\\milic\\Documents\\school-management-system\\SchoolManagementSystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Korisnik\\Desktop\\SchoolManagementSystem\\SchoolManagementSystem.csproj": {
+    "C:\\Users\\milic\\Documents\\school-management-system\\SchoolManagementSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Korisnik\\Desktop\\SchoolManagementSystem\\SchoolManagementSystem.csproj",
+        "projectUniqueName": "C:\\Users\\milic\\Documents\\school-management-system\\SchoolManagementSystem.csproj",
         "projectName": "SchoolManagementSystem",
-        "projectPath": "C:\\Users\\Korisnik\\Desktop\\SchoolManagementSystem\\SchoolManagementSystem.csproj",
-        "packagesPath": "C:\\Users\\Korisnik\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Korisnik\\Desktop\\SchoolManagementSystem\\obj\\",
+        "projectPath": "C:\\Users\\milic\\Documents\\school-management-system\\SchoolManagementSystem.csproj",
+        "packagesPath": "C:\\Users\\milic\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\milic\\Documents\\school-management-system\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Korisnik\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\milic\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -53,6 +53,12 @@
               "version": "[9.0.6, )"
             },
             "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.6, )"
             },

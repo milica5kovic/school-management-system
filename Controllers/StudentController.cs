@@ -18,40 +18,42 @@ namespace SchoolManagementSystem.Controllers
         }
 
         // GET: Student
-        public async Task<IActionResult> Index(string searchString, string sortOrder, int page = 1, int pageSize = 5)
+        // GET: Student
+        public async Task<IActionResult> Index(string searchString, string sortOrder,
+            int page = 1, int pageSize = 5)
         {
             ViewData["CurrentFilter"] = searchString;
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["DateSortParm"] = sortOrder == "date" ? "date_desc" : "date";
+            ViewData["CurrentSort"]   = sortOrder;
+            ViewData["NameSortParm"]  = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
 
-            var students = from s in _context.Students
-                           select s;
+            var students = _context.Students.AsQueryable();
 
-            if (!String.IsNullOrEmpty(searchString))
+            // PRETRAGA
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
-                students = students.Where(s => s.FullName.Contains(searchString));
+                students = students.Where(s =>
+                    (s.FirstName + " " + s.LastName).Contains(searchString) ||
+                    (s.LastName  + " " + s.FirstName).Contains(searchString) ||
+                    s.Jmbg.Contains(searchString));
             }
 
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    students = students.OrderByDescending(s => s.FullName);
-                    break;
-                default:
-                    students = students.OrderBy(s => s.FullName);
-                    break;
-            }
+            // SORTIRANJE
+            students = sortOrder == "name_desc"
+                ? students.OrderByDescending(s => s.LastName)
+                    .ThenByDescending(s => s.FirstName)
+                : students.OrderBy(s => s.LastName)
+                    .ThenBy(s => s.FirstName);
 
+            // PAGING
             var count = await students.CountAsync();
-            var items = await students
-                .Skip((page - 1) * pageSize)
+            var items = await students.Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
             var pagedList = new PagedList<Student>(items, count, page, pageSize);
             return View(pagedList);
         }
+
 
         // GET: Student/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -75,7 +77,7 @@ namespace SchoolManagementSystem.Controllers
         // POST: Student/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FullName")] Student student)
+        public async Task<IActionResult> Create([Bind("Jmbg,FirstName,LastName,Phone,Email,EmergencyContactName,EmergencyContactPhone")] Student student)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +102,7 @@ namespace SchoolManagementSystem.Controllers
         // POST: Student/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName")] Student student)
+        public async Task<IActionResult> Edit(int id, [Bind("Jmbg,FirstName,LastName,Phone,Email,EmergencyContactName,EmergencyContactPhone")] Student student)
         {
             if (id != student.Id) return NotFound();
 
