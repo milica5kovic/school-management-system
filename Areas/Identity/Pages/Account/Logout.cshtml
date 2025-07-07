@@ -1,0 +1,31 @@
+﻿@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Odjava";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-header text-white bg-primary">
+                    <h4 class="mb-0">@ViewData["Title"]</h4>
+                </div>
+                <div class="card-body text-center">
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                            <p class="mb-3">Da li ste sigurni da želite da se odjavite?</p>
+                            <button type="submit" class="btn btn-danger">Odjavi se</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p>Uspešno ste se odjavili iz aplikacije.</p>
+                        <a asp-page="/Account/Login" class="btn btn-primary mt-3">Prijavi se ponovo</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
