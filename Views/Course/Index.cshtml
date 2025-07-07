@@ -1,57 +1,74 @@
 @model IEnumerable<Course>
+@using SchoolManagementSystem.Helpers
+
 
 @{
-    ViewData["Title"] = "Kursevi";
+    ViewData["Title"] = "Predmeti";
 }
 
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h4 class="mb-0">
-                                <i class="fas fa-book me-2"></i>Lista kurseva
-                            </h4>
-                        </div>
-                        <div class="col-auto">
-                            <a href="@Url.Action("Create")" class="btn btn-primary btn-custom">
-                                <i class="fas fa-plus me-2"></i>Dodaj novi kurs
-                            </a>
-                        </div>
-                    </div>
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-book me-2"></i>Lista predmeta
+                    </h4>
+                    <a href="@Url.Action("Create")" class="btn btn-light btn-custom">
+                        <i class="fas fa-plus me-2"></i>Dodaj novi predmet
+                    </a>
                 </div>
                 <div class="card-body">
                     @if (Model != null && Model.Any())
                     {
                         <div class="table-responsive">
-                            <table class="table table-hover" id="coursesTable">
-                                <thead>
+                            <table class="table table-hover align-middle" id="coursesTable">
+                                <thead class="table-light">
                                     <tr>
-                                        <th>
-                                            <i class="fas fa-book-open me-2"></i>Naslov kursa
-                                        </th>
-                                        <th>
-                                            <i class="fas fa-cogs me-2"></i>Akcije
-                                        </th>
+                                        <th><i class="fas fa-book-open me-2"></i>Naslov kursa</th>
+                                        <th><i class="fas fa-barcode me-2"></i>Šifra</th>
+                                        <th><i class="fas fa-star me-2"></i>ESPB</th>
+                                        <th><i class="fas fa-school me-2"></i>Razred</th>
+                                        <th><i class="fas fa-calendar-alt me-2"></i>Semestar</th>
+                                        <th><i class="fas fa-toggle-on me-2"></i>Izborni</th>
+                                        <th><i class="fas fa-cogs me-2"></i>Akcije</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var course in Model)
                                     {
                                         <tr>
+                                            <td><strong>@course?.Title</strong></td>
+                                            <td>@(course?.Code ?? "-")</td>
                                             <td>
-                                                <strong>@course?.Title</strong>
+                                                @(course.ESPB.HasValue
+                                                    ? course.ESPB.Value.GetDisplayName()
+                                                    : "-")
                                             </td>
                                             <td>
-                                                <a href="@Url.Action("Edit", new { id = course.Id })" class="btn btn-warning btn-action" title="Izmeni">
+                                                @(course.GradeLevel.HasValue
+                                                    ? course.GradeLevel.Value.GetDisplayName()
+                                                    : "-")
+                                            </td>
+                                            <td>@(course.Semester.HasValue ? course.Semester.ToString() : "-")</td>
+                                            <td>
+                                                @if (course.IsElective)
+                                                {
+                                                    <span class="badge bg-success">Da</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">Ne</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("Edit", new { id = course.Id })" class="btn btn-warning btn-sm btn-action" title="Izmeni">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="@Url.Action("Details", new { id = course.Id })" class="btn btn-info btn-action" title="Detalji">
+                                                <a href="@Url.Action("Details", new { id = course.Id })" class="btn btn-info btn-sm btn-action" title="Detalji">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="@Url.Action("Delete", new { id = course.Id })" class="btn btn-danger btn-action" title="Obriši">
+                                                <a href="@Url.Action("Delete", new { id = course.Id })" class="btn btn-danger btn-sm btn-action" title="Obriši">
                                                     <i class="fas fa-trash"></i>
                                                 </a>
                                             </td>
@@ -86,10 +103,10 @@
                 "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
                 "order": [[0, "asc"]],
                 "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/English.json"
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Serbian.json"
                 },
                 "columnDefs": [
-                    { "orderable": false, "targets": 1 }
+                    { "orderable": false, "targets": 6 }
                 ]
             });
         });
@@ -98,6 +115,10 @@
     <style>
         .btn-action {
             margin-right: 5px;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #e3f2fd;
+            cursor: pointer;
         }
     </style>
 }

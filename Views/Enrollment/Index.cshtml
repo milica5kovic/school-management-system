@@ -1,3 +1,4 @@
+@using SchoolManagementSystem.Helpers
 @model IEnumerable<Enrollment>
 
 @{
@@ -5,126 +6,92 @@
 }
 
 <div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h4 class="mb-0">
-                                <i class="fas fa-user-plus me-2"></i>Lista upisa studenata
-                            </h4>
-                        </div>
-                        <div class="col-auto">
-                            <a asp-action="Create" class="btn btn-primary btn-custom">
-                                <i class="fas fa-plus me-2"></i>Dodaj novi upis
-                            </a>
-                        </div>
-                    </div>
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="fas fa-user-plus me-2"></i>Lista upisa učenika
+            </h4>
+            <a asp-action="Create" class="btn btn-light text-primary">
+                <i class="fas fa-plus me-2"></i>Dodaj novi upis
+            </a>
+        </div>
+
+        <div class="card-body">
+            @if (Model?.Any() == true)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle" id="enrollmentsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="fas fa-user me-2"></i>Učenik</th>
+                                <th><i class="fas fa-layer-group me-2"></i>Razred</th>
+                                <th><i class="fas fa-calendar me-2"></i>Šk. godina</th>
+                                <th><i class="fas fa-door-open me-2"></i>Odeljenje</th>
+                                <th><i class="fas fa-calendar-check me-2"></i>Upisan</th>
+                                <th><i class="fas fa-redo me-2"></i>Ponavlja</th>
+                                <th><i class="fas fa-cogs me-2"></i>Akcije</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var e in Model)
+                            {
+                                <tr>
+                                    <td>@e.Student?.FullName</td>
+                                    <td>@e.GradeLevel.GetDisplayName()</td>
+                                    <td>@e.AcademicYear</td>
+                                    <td>@(string.IsNullOrWhiteSpace(e.ClassGroup) ? "-" : e.ClassGroup)</td>
+                                    <td>@e.EnrollmentDate.ToString("dd.MM.yyyy")</td>
+                                    <td>
+                                        @if (e.IsRepeating)
+                                        {
+                                            <span class="badge bg-danger">Da</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Ne</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@e.Id" class="btn btn-warning btn-sm me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@e.Id" class="btn btn-info btn-sm me-1">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@e.Id" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-                <div class="card-body">
-                    @if (Model != null && Model.Any())
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-hover" id="enrollmentsTable">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <i class="fas fa-user me-2"></i>Student
-                                        </th>
-                                        <th>
-                                            <i class="fas fa-book me-2"></i>Kurs
-                                        </th>
-                                        <th>
-                                            <i class="fas fa-calendar me-2"></i>Datum upisa
-                                        </th>
-                                        <th>
-                                            <i class="fas fa-cogs me-2"></i>Akcije
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var enrollment in Model)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-3">
-                                                        <i class="fas fa-user text-white"></i>
-                                                    </div>
-                                                    <strong>@enrollment.Student?.FullName</strong>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-sm bg-info rounded-circle d-flex align-items-center justify-content-center me-3">
-                                                        <i class="fas fa-book text-white"></i>
-                                                    </div>
-                                                    <span>@enrollment.Course?.Title</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="fas fa-calendar-alt text-muted me-2"></i>
-                                                    <span class="badge bg-light text-dark">@enrollment.EnrolledOn.ToShortDateString()</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <a asp-action="Edit" asp-route-id="@enrollment.Id" class="btn btn-warning btn-action" title="Izmeni">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a asp-action="Details" asp-route-id="@enrollment.Id" class="btn btn-info btn-action" title="Detalji">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a asp-action="Delete" asp-route-id="@enrollment.Id" class="btn btn-danger btn-action" title="Obriši">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="text-center py-5">
-                            <i class="fas fa-user-plus fa-4x text-muted mb-4"></i>
-                            <h4 class="text-muted">Nema upisa</h4>
-                            <p class="text-muted">Trenutno nema upisa studenata u bazi podataka.</p>
-                            <a asp-action="Create" class="btn btn-primary btn-custom">
-                                <i class="fas fa-plus me-2"></i>Dodaj prvi upis
-                            </a>
-                        </div>
-                    }
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-user-plus fa-4x text-muted mb-4"></i>
+                    <h4 class="text-muted">Nema upisa</h4>
+                    <p class="text-muted">Trenutno nema upisanih učenika.</p>
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Dodaj prvi upis
+                    </a>
                 </div>
-            </div>
+            }
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function() {
-            $('#enrollmentsTable').DataTable({
-                "pageLength": 10,
-                "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
-                "order": [[ 2, "desc" ]],
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/English.json"
-                },
-                "columnDefs": [
-                    { "orderable": false, "targets": 3 }
-                ]
-            });
-        });
-    </script>
-    
-    <style>
-        .avatar-sm {
-            width: 35px;
-            height: 35px;
-            font-size: 14px;
-        }
-    </style>
+<script>
+$(function () {
+    $('#enrollmentsTable').DataTable({
+        pageLength: 10,
+        order: [[4, 'desc']],
+        language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/sr-SP.json' },
+        columnDefs: [{ orderable: false, targets: 6 }]
+    });
+});
+</script>
 }

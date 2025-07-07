@@ -1,0 +1,57 @@
+﻿@model Enrollment
+
+@{
+    ViewData["Title"] = "Obriši upis";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0"><i class="fas fa-trash-alt me-2"></i>Obriši upis</h4>
+                </div>
+                <div class="card-body">
+                    <h5>Da li ste sigurni da želite da obrišete ovaj upis?</h5>
+
+                    <dl class="row">
+                        <dt class="col-sm-4">Učenik:</dt>
+                        <dd class="col-sm-8">@Model.Student?.FullName</dd>
+
+                        <dt class="col-sm-4">Razred:</dt>
+                        <dd class="col-sm-8">@Model.GradeLevel</dd>
+
+                        <dt class="col-sm-4">Šk. godina:</dt>
+                        <dd class="col-sm-8">@Model.AcademicYear</dd>
+
+                        <dt class="col-sm-4">Datum upisa:</dt>
+                        <dd class="col-sm-8">@Model.EnrollmentDate.ToString("dd.MM.yyyy")</dd>
+
+                        <dt class="col-sm-4">Odeljenje:</dt>
+                        <dd class="col-sm-8">@Model.ClassGroup</dd>
+
+                        <dt class="col-sm-4">Ponavlja:</dt>
+                        <dd class="col-sm-8">@((Model.IsRepeating) ? "Da" : "Ne")</dd>
+
+                        <dt class="col-sm-4">Napomena:</dt>
+                        <dd class="col-sm-8">@Model.Notes</dd>
+                    </dl>
+
+                    <form asp-action="DeleteConfirmed" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Odustani
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>Obriši
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

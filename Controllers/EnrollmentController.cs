@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Data;
+using SchoolManagementSystem.Helpers;
 using SchoolManagementSystem.Models;
 
 namespace SchoolManagementSystem.Controllers
@@ -19,7 +20,6 @@ namespace SchoolManagementSystem.Controllers
         {
             var enrollments = await _context.Enrollments
                 .Include(e => e.Student)
-                .Include(e => e.Course)
                 .ToListAsync();
 
             return View(enrollments);
@@ -31,7 +31,6 @@ namespace SchoolManagementSystem.Controllers
 
             var enrollment = await _context.Enrollments
                 .Include(e => e.Student)
-                .Include(e => e.Course)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (enrollment == null) return NotFound();
@@ -41,38 +40,41 @@ namespace SchoolManagementSystem.Controllers
 
         public IActionResult Create()
         {
-            ViewData["Students"] = new SelectList(_context.Students, "Id", "FullName");
-            ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Title");
-            return View(new Enrollment { EnrolledOn = DateTime.Now });
+            ViewBag.Students = new SelectList(_context.Students.OrderBy(s => s.LastName), "Id", "FullName");
+            ViewBag.GradeLevels = new SelectList(Enum.GetValues(typeof(GradeLevel)).Cast<GradeLevel>());
+            ViewBag.AcademicYear = $"{DateTime.Now.Year}/{DateTime.Now.Year + 1}";
+
+            return View(new Enrollment
+            {
+                AcademicYear = ViewBag.AcademicYear,
+                EnrollmentDate = DateTime.Now
+            });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentId,CourseId,EnrolledOn")] Enrollment enrollment)
+        public async Task<IActionResult> Create([Bind("StudentId,GradeLevel,AcademicYear,EnrollmentDate,ClassGroup,IsRepeating,Notes")] Enrollment enrollment)
         {
+            
+            if (!ModelState.IsValid)
+            {
+                // Debug ispisi validacione greške
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                foreach (var error in errors)
+                {
+                    Console.WriteLine("Validation error: " + error);
+                }
+            }
+
             if (ModelState.IsValid)
             {
-                _context.Add(enrollment);
+                _context.Enrollments.Add(enrollment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            if (!ModelState.IsValid)
-            {
-                Console.WriteLine(">>> ModelState nije validan!");
-                foreach (var key in ModelState.Keys)
-                {
-                    var state = ModelState[key];
-                    foreach (var error in state.Errors)
-                    {
-                        Console.WriteLine($"Polje: {key}, Greška: {error.ErrorMessage}");
-                    }
-                }
-            }
-
-
-            ViewData["Students"] = new SelectList(_context.Students, "Id", "FullName", enrollment.StudentId);
-            ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Title", enrollment.CourseId);
+            ViewBag.Students = new SelectList(_context.Students.OrderBy(s => s.LastName), "Id", "FullName", enrollment.StudentId);
+            ViewBag.GradeLevels = new SelectList(Enum.GetValues(typeof(GradeLevel)).Cast<GradeLevel>(), enrollment.GradeLevel);
             return View(enrollment);
         }
 
@@ -83,14 +85,15 @@ namespace SchoolManagementSystem.Controllers
             var enrollment = await _context.Enrollments.FindAsync(id);
             if (enrollment == null) return NotFound();
 
-            ViewData["Students"] = new SelectList(_context.Students, "Id", "FullName", enrollment.StudentId);
-            ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Title", enrollment.CourseId);
+            ViewBag.Students = new SelectList(_context.Students.OrderBy(s => s.LastName), "Id", "FullName", enrollment.StudentId);
+            ViewBag.GradeLevels = new SelectList(Enum.GetValues(typeof(GradeLevel)).Cast<GradeLevel>(), enrollment.GradeLevel);
+
             return View(enrollment);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StudentId,CourseId,EnrolledOn")] Enrollment enrollment)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,StudentId,GradeLevel,AcademicYear,EnrollmentDate,ClassGroup,IsRepeating,Notes")] Enrollment enrollment)
         {
             if (id != enrollment.Id) return NotFound();
 
@@ -100,18 +103,19 @@ namespace SchoolManagementSystem.Controllers
                 {
                     _context.Update(enrollment);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Enrollments.Any(e => e.Id == id))
+                    if (!_context.Enrollments.Any(e => e.Id == enrollment.Id))
                         return NotFound();
                     throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
 
-            ViewData["Students"] = new SelectList(_context.Students, "Id", "FullName", enrollment.StudentId);
-            ViewData["Courses"] = new SelectList(_context.Courses, "Id", "Title", enrollment.CourseId);
+            ViewBag.Students = new SelectList(_context.Students.OrderBy(s => s.LastName), "Id", "FullName", enrollment.StudentId);
+            ViewBag.GradeLevels = new SelectList(Enum.GetValues(typeof(GradeLevel)).Cast<GradeLevel>(), enrollment.GradeLevel);
+
             return View(enrollment);
         }
 
@@ -121,8 +125,7 @@ namespace SchoolManagementSystem.Controllers
 
             var enrollment = await _context.Enrollments
                 .Include(e => e.Student)
-                .Include(e => e.Course)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(e => e.Id == id);
 
             if (enrollment == null) return NotFound();
 
@@ -134,6 +137,8 @@ namespace SchoolManagementSystem.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var enrollment = await _context.Enrollments.FindAsync(id);
+            if (enrollment == null) return NotFound();
+
             _context.Enrollments.Remove(enrollment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

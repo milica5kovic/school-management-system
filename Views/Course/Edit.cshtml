@@ -1,0 +1,104 @@
+﻿@using SchoolManagementSystem.Helpers
+@model Course
+
+@{
+    ViewData["Title"] = "Izmeni predmet";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-book me-2"></i>
+                        <h4 class="mb-0">Izmeni predmet</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                        </div>
+
+                        <!-- Naziv -->
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label">
+                                <i class="fas fa-heading me-2"></i>Naziv predmeta
+                            </label>
+                            <input asp-for="Title" class="form-control" />
+                        </div>
+
+                        <!-- Šifra predmeta -->
+                        <div class="mb-3">
+                            <label asp-for="Code" class="form-label">
+                                <i class="fas fa-barcode me-2"></i>Šifra
+                            </label>
+                            <input asp-for="Code" class="form-control" />
+                        </div>
+
+                        <!-- Opis predmeta -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">
+                                <i class="fas fa-align-left me-2"></i>Opis
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <!-- ESPB -->
+                        <div class="mb-3">
+                            <label asp-for="ESPB" class="form-label">
+                                <i class="fas fa-star me-2"></i>Poeni/ESPB
+                            </label>
+                            <select asp-for="ESPB" class="form-select" asp-items="Html.GetEnumSelectList<ESPB>()">
+                                <option value="">-- Izaberite ESPB --</option>
+                            </select>
+                        </div>
+
+                        <!-- Razred -->
+                        <div class="mb-3">
+                            <label asp-for="GradeLevel" class="form-label">
+                                <i class="fas fa-school me-2"></i>Razred
+                            </label>
+                            <select asp-for="GradeLevel" class="form-select" asp-items="Html.GetEnumSelectList<GradeLevel>()">
+                                <option value="">-- Izaberite razred --</option>
+                            </select>
+                        </div>
+
+                        <!-- Semestar -->
+                        <div class="mb-3">
+                            <label asp-for="Semester" class="form-label">
+                                <i class="fas fa-calendar-alt me-2"></i>Semestar
+                            </label>
+                            <input asp-for="Semester" type="number" min="1" max="2" class="form-control" />
+                        </div>
+
+                        <!-- Izborni predmet -->
+                        <div class="form-check form-switch mb-3">
+                            <input asp-for="IsElective" class="form-check-input" type="checkbox" role="switch" />
+                            <label asp-for="IsElective" class="form-check-label">
+                                <i class="fas fa-check-circle me-2"></i>Izborni predmet
+                            </label>
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left me-2"></i>Nazad
+                            </a>
+                            <input type="submit" value="Sačuvaj izmene" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,192 +1,51 @@
 @model IEnumerable<Teacher>
-
 @{
     ViewData["Title"] = "Nastavnici";
 }
-
 <div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h4 class="mb-0">
-                                <i class="fas fa-chalkboard-teacher me-2"></i>Lista nastavnika
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <input type="text" id="teacherNameInput" class="form-control" placeholder="Unesite ime nastavnika" />
-                        </div>
-                        <div class="col-md-2">
-                            <button id="addTeacherBtn" class="btn btn-success w-100">Dodaj nastavnika</button>
-                        </div>
-                    </div>
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mb-0"><i class="fas fa-chalkboard-teacher me-2"></i>Lista nastavnika</h4>
+        </div>
+        <div class="card-body">
+            <a asp-action="Create" class="btn btn-primary mb-3">
+                <i class="fas fa-plus me-2"></i>Dodaj nastavnika
+            </a>
 
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <input type="text" id="searchInput" class="form-control" placeholder="Pretražite nastavnike..." />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <select id="sortSelect" class="form-select">
-                                <option value="name_asc">Ime (A-Z)</option>
-                                <option value="name_desc">Ime (Z-A)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="teachersContainer" class="table-responsive">
-                        <table class="table table-hover" id="teachersTable">
-                            <thead>
-                                <tr>
-                                    <th>Ime i prezime</th>
-                                    <th>Akcije</th>
-                                </tr>
-                            </thead>
-                            <tbody id="teachersTableBody"></tbody>
-                        </table>
-                    </div>
-
-                    <div class="d-flex justify-content-center mt-4">
-                        <nav aria-label="Navigacija kroz stranice">
-                            <ul class="pagination" id="pagination"></ul>
-                        </nav>
-                    </div>
-                </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Ime i prezime</th>
+                            <th>E‑pošta</th>
+                            <th>Telefon</th>
+                            <th>Radno vreme</th>
+                            <th>Zaposlen od</th>
+                            <th>Akcije</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var t in Model)
+                        {
+                            <tr>
+                                <td>@t.FullName</td>
+                                <td>@t.Email</td>
+                                <td>@t.Phone</td>
+                                <td>@t.EmploymentType</td>
+                                <td>@t.HiredOn?.ToString("dd.MM.yyyy")</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@t.Id"
+                                       class="btn btn-warning btn-sm me-1"><i class="fas fa-edit"></i></a>
+                                    <a asp-action="Details" asp-route-id="@t.Id"
+                                       class="btn btn-info btn-sm me-1"><i class="fas fa-eye"></i></a>
+                                    <a asp-action="Delete" asp-route-id="@t.Id"
+                                       class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        let teachers = @Html.Raw(Json.Serialize(Model));
-        let filteredTeachers = teachers;
-        let currentPage = 1;
-        let pageSize = 5;
-
-        function renderTeachers() {
-            const start = (currentPage - 1) * pageSize;
-            const end = start + pageSize;
-            const pageTeachers = filteredTeachers.slice(start, end);
-
-            const tbody = document.getElementById('teachersTableBody');
-            tbody.innerHTML = '';
-
-            pageTeachers.forEach(teacher => {
-                const row = `
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <div class="avatar-sm bg-success rounded-circle d-flex align-items-center justify-content-center me-3">
-                                    <i class="fas fa-chalkboard-teacher text-white"></i>
-                                </div>
-                                <strong>${teacher.fullName}</strong>
-                            </div>
-                        </td>
-                        <td>
-                            <a href="/Teacher/Details/${teacher.id}" class="btn btn-info btn-action" title="Detalji">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <button class="btn btn-danger btn-action" onclick="deleteTeacher(${teacher.id})" title="Obriši">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                tbody.innerHTML += row;
-            });
-
-            renderPagination();
-        }
-
-        function renderPagination() {
-            const totalPages = Math.ceil(filteredTeachers.length / pageSize);
-            const pagination = document.getElementById('pagination');
-            pagination.innerHTML = '';
-
-            for (let i = 1; i <= totalPages; i++) {
-                const li = document.createElement('li');
-                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-                li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
-                pagination.appendChild(li);
-            }
-        }
-
-        function changePage(page) {
-            currentPage = page;
-            renderTeachers();
-        }
-
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const searchTerm = this.value.toLowerCase();
-            filteredTeachers = teachers.filter(teacher => 
-                teacher.fullName.toLowerCase().includes(searchTerm)
-            );
-            currentPage = 1;
-            renderTeachers();
-        });
-
-        document.getElementById('sortSelect').addEventListener('change', function () {
-            const sortType = this.value;
-            filteredTeachers.sort((a, b) => {
-                if (sortType === 'name_asc') {
-                    return a.fullName.localeCompare(b.fullName);
-                } else {
-                    return b.fullName.localeCompare(a.fullName);
-                }
-            });
-            currentPage = 1;
-            renderTeachers();
-        });
-
-        $('#addTeacherBtn').on('click', function () {
-            const name = $('#teacherNameInput').val();
-            if (!name) return alert("Unesi ime!");
-
-            $.ajax({
-                url: '/api/TeacherApi',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ fullName: name }),
-                success: function (newTeacher) {
-                    teachers.push(newTeacher);
-                    filteredTeachers = teachers;
-                    $('#teacherNameInput').val('');
-                    renderTeachers();
-                },
-                error: function () {
-                    alert("Greška prilikom dodavanja.");
-                }
-            });
-        });
-
-        function deleteTeacher(id) {
-            if (!confirm("Obrisati nastavnika?")) return;
-
-            $.ajax({
-                url: `/api/TeacherApi/${id}`,
-                type: 'DELETE',
-                success: function () {
-                    teachers = teachers.filter(t => t.id !== id);
-                    filteredTeachers = teachers;
-                    renderTeachers();
-                },
-                error: function () {
-                    alert("Greška prilikom brisanja.");
-                }
-            });
-        }
-
-        renderTeachers();
-    </script>
-}

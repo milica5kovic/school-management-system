@@ -6,129 +6,93 @@ using SchoolManagementSystem.Models;
 namespace SchoolManagementSystem.Controllers
 {
     public class TeacherController : Controller
+{
+    private readonly SchoolContext _context;
+    public TeacherController(SchoolContext ctx) => _context = ctx;
+
+    // INDEX
+    public async Task<IActionResult> Index()
+        => View(await _context.Teachers
+                              .Include(t => t.CourseTeachers)
+                              .ThenInclude(ct => ct.Course)
+                              .ToListAsync());
+
+    // DETAILS
+    public async Task<IActionResult> Details(int? id)
     {
-        private readonly SchoolContext _context;
+        if (id is null) return NotFound();
 
-        public TeacherController(SchoolContext context)
+        var teacher = await _context.Teachers
+            .Include(t => t.CourseTeachers).ThenInclude(ct => ct.Course)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        return teacher is null ? NotFound() : View(teacher);
+    }
+
+    // CREATE (GET)
+    public IActionResult Create()
+        => View();
+
+    // CREATE (POST)
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(
+        [Bind("FirstName,LastName,DateOfBirth,Email,Phone,EmploymentType,HiredOn")]
+        Teacher teacher)
+    {
+        if (ModelState.IsValid)
         {
-            _context = context;
-        }
-
-        // GET: Teacher
-        public async Task<IActionResult> Index()
-        {
-            var teachers = await _context.Teachers.ToListAsync();
-            return View(teachers);
-        }
-
-        // GET: Teacher/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var teacher = await _context.Teachers
-                .FirstOrDefaultAsync(t => t.Id == id);
-
-            if (teacher == null)
-                return NotFound();
-
-            return View(teacher);
-        }
-
-        // GET: Teacher/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Teacher/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FullName")] Teacher teacher)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(teacher);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(teacher);
-        }
-
-        // GET: Teacher/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var teacher = await _context.Teachers.FindAsync(id);
-            if (teacher == null)
-                return NotFound();
-
-            return View(teacher);
-        }
-
-        // POST: Teacher/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName")] Teacher teacher)
-        {
-            if (id != teacher.Id)
-                return NotFound();
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(teacher);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TeacherExists(teacher.Id))
-                        return NotFound();
-                    else
-                        throw;
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(teacher);
-        }
-
-        // GET: Teacher/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var teacher = await _context.Teachers
-                .FirstOrDefaultAsync(t => t.Id == id);
-
-            if (teacher == null)
-                return NotFound();
-
-            return View(teacher);
-        }
-
-        // POST: Teacher/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var teacher = await _context.Teachers.FindAsync(id);
-            if (teacher != null)
-            {
-                _context.Teachers.Remove(teacher);
-                await _context.SaveChangesAsync();
-            }
-
+            _context.Add(teacher);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-        private bool TeacherExists(int id)
-        {
-            return _context.Teachers.Any(e => e.Id == id);
-        }
+        return View(teacher);
     }
+
+    // EDIT (GET)
+    public async Task<IActionResult> Edit(int? id)
+    {
+        if (id is null) return NotFound();
+        var teacher = await _context.Teachers.FindAsync(id);
+        return teacher is null ? NotFound() : View(teacher);
+    }
+
+    // EDIT (POST)
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id,
+        [Bind("Id,FirstName,LastName,DateOfBirth,Email,Phone,EmploymentType,HiredOn")]
+        Teacher teacher)
+    {
+        if (id != teacher.Id) return NotFound();
+
+        if (ModelState.IsValid)
+        {
+            _context.Update(teacher);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        return View(teacher);
+    }
+
+    // DELETE
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id is null) return NotFound();
+        var teacher = await _context.Teachers.FindAsync(id);
+        return teacher is null ? NotFound() : View(teacher);
+    }
+
+    // DELETE (POST)
+    [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var teacher = await _context.Teachers.FindAsync(id);
+        if (teacher is not null)
+        {
+            _context.Teachers.Remove(teacher);
+            await _context.SaveChangesAsync();
+        }
+        return RedirectToAction(nameof(Index));
+    }
+}
+
 }

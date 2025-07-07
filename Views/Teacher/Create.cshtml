@@ -1,31 +1,97 @@
+@using SchoolManagementSystem.Helpers
 @model Teacher
-
 @{
     ViewData["Title"] = "Dodaj nastavnika";
 }
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-chalkboard-teacher me-2"></i>
+                        <h4 class="mb-0">Dodaj nastavnika</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                        </div>
 
-<h2>Dodaj nastavnika</h2>
+                        <!-- IME -->
+                        <div class="mb-3">
+                            <label asp-for="FirstName" class="form-label">
+                                <i class="fas fa-user me-2"></i>Ime
+                            </label>
+                            <input asp-for="FirstName" class="form-control" />
+                        </div>
 
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create" method="post">
-            @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <!-- PREZIME -->
+                        <div class="mb-3">
+                            <label asp-for="LastName" class="form-label">
+                                <i class="fas fa-user me-2"></i>Prezime
+                            </label>
+                            <input asp-for="LastName" class="form-control" />
+                        </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="FullName" class="control-label"></label>
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger"></span>
+                        <!-- DOB -->
+                        <div class="mb-3">
+                            <label asp-for="DateOfBirth" class="form-label">
+                                <i class="fas fa-birthday-cake me-2"></i>Datum rođenja
+                            </label>
+                            <input asp-for="DateOfBirth" class="form-control" type="date" />
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">
+                                <i class="fas fa-envelope me-2"></i>E‑pošta
+                            </label>
+                            <input asp-for="Email" class="form-control" />
+                        </div>
+
+                        <!-- PHONE -->
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label">
+                                <i class="fas fa-phone me-2"></i>Telefon
+                            </label>
+                            <input asp-for="Phone" class="form-control" />
+                        </div>
+
+                        <!-- EMPLOYMENT TYPE -->
+                        <div class="mb-3">
+                            <label asp-for="EmploymentType" class="form-label">
+                                <i class="fas fa-user-clock me-2"></i>Radno vreme
+                            </label>
+                            <select asp-for="EmploymentType" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<EmploymentType>()">
+                            </select>
+                        </div>
+
+                        <!-- HIRED ON -->
+                        <div class="mb-4">
+                            <label asp-for="HiredOn" class="form-label">
+                                <i class="fas fa-calendar-check me-2"></i>Zaposlen od
+                            </label>
+                            <input asp-for="HiredOn" class="form-control" type="date" />
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left me-2"></i>Nazad
+                            </a>
+                            <input type="submit" value="Sačuvaj" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <div class="form-group">
-                <input type="submit" value="Dodaj" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Nazad</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -1,0 +1,101 @@
+﻿@model Enrollment
+
+@{
+    ViewData["Title"] = "Izmeni upis";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Izmeni upis</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none"></div>
+
+                        @* Hidden field for Id *@
+                        <input type="hidden" asp-for="Id" />
+
+                        <!-- UČENIK -->
+                        <div class="mb-3">
+                            <label asp-for="StudentId" class="form-label">
+                                <i class="fas fa-user me-2"></i>Učenik
+                            </label>
+                            <select asp-for="StudentId" class="form-select" asp-items="ViewBag.Students">
+                                <option value="">-- Izaberite učenika --</option>
+                            </select>
+                        </div>
+
+                        <!-- RAZRED -->
+                        <div class="mb-3">
+                            <label asp-for="GradeLevel" class="form-label">
+                                <i class="fas fa-layer-group me-2"></i>Razred
+                            </label>
+                            <select asp-for="GradeLevel" class="form-select" asp-items="ViewBag.GradeLevels">
+                                <option value="">-- Razred --</option>
+                            </select>
+                        </div>
+
+                        <!-- ŠKOLSKA GODINA -->
+                        <div class="mb-3">
+                            <label asp-for="AcademicYear" class="form-label">
+                                <i class="fas fa-calendar me-2"></i>Školska godina
+                            </label>
+                            <input asp-for="AcademicYear" class="form-control" />
+                        </div>
+
+                        <!-- DATUM UPISA -->
+                        <div class="mb-3">
+                            <label asp-for="EnrollmentDate" class="form-label">
+                                <i class="fas fa-calendar-check me-2"></i>Datum upisa
+                            </label>
+                            <input asp-for="EnrollmentDate" type="date" class="form-control" />
+                        </div>
+
+                        <!-- ODELJENJE -->
+                        <div class="mb-3">
+                            <label asp-for="ClassGroup" class="form-label">
+                                <i class="fas fa-door-open me-2"></i>Odeljenje
+                            </label>
+                            <input asp-for="ClassGroup" class="form-control" placeholder="npr. II‑3" />
+                        </div>
+
+                        <!-- PONAVLJA -->
+                        <div class="form-check form-switch mb-3">
+                            <input asp-for="IsRepeating" class="form-check-input" type="checkbox" role="switch" />
+                            <label asp-for="IsRepeating" class="form-check-label">
+                                <i class="fas fa-redo me-2"></i>Ponavlja razred
+                            </label>
+                        </div>
+
+                        <!-- NAPOMENA -->
+                        <div class="mb-4">
+                            <label asp-for="Notes" class="form-label">
+                                <i class="fas fa-sticky-note me-2"></i>Napomena
+                            </label>
+                            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Odustani
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Sačuvaj izmene
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

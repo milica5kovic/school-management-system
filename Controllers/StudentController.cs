@@ -102,7 +102,7 @@ namespace SchoolManagementSystem.Controllers
         // POST: Student/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Jmbg,FirstName,LastName,Phone,Email,EmergencyContactName,EmergencyContactPhone")] Student student)
+        public async Task<IActionResult> Edit(int id, [Bind("Id, Jmbg,FirstName,LastName,Phone,Email,EmergencyContactName,EmergencyContactPhone")] Student student)
         {
             if (id != student.Id) return NotFound();
 
