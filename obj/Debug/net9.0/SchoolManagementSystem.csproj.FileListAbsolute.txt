@@ -308,11 +308,14 @@ C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\SchoolManagem
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\SchoolManagementSystem.pdb
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Azure.Core.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Azure.Identity.dll
+C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Castle.Core.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Humanizer.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.Internal.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.AspNetCore.Identity.UI.dll
+C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.AspNetCore.Razor.Language.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.Build.dll
@@ -336,6 +339,7 @@ C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.Dot
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.InMemory.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.SqlServer.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.Extensions.Caching.Abstractions.dll
@@ -370,7 +374,9 @@ C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.Vis
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Mono.TextTemplating.dll
+C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Moq.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Newtonsoft.Json.dll
+C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\Newtonsoft.Json.Bson.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\NuGet.Common.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\NuGet.Configuration.dll
 C:\Users\milic\Documents\school-management-system\bin\Debug\net9.0\NuGet.DependencyResolver.Core.dll
